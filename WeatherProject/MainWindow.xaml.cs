@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +23,8 @@ namespace WeatherProject
     public partial class MainWindow : Window
     {
         XMLProcessor proc;
-        List<RegionData> testdata;
+        List<RegionData> regionDataList;
+        XDocument xdoc;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,8 +34,21 @@ namespace WeatherProject
         {
             XDocument xdoc = XDocument.Load("weatherdata.xml");
             proc = new XMLProcessor(xdoc);
-            testdata = proc.GetRegionData();
-            listbox.ItemsSource = testdata;
+            Task.Run(() => CheckXMLForUpdate());
+
+        }
+
+        private void CheckXMLForUpdate()
+        {
+            while (true)
+            {
+                xdoc = XDocument.Load("weatherdata.xml");
+                proc = new XMLProcessor(xdoc);
+                regionDataList = proc.GetRegionData();
+                Dispatcher.Invoke(() => listbox.ItemsSource = regionDataList);
+                Thread.Sleep(1000);
+            }
+            
         }
     }
 }

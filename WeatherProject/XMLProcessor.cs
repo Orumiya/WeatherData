@@ -7,55 +7,30 @@ using System.Xml.Linq;
 
 namespace WeatherProject
 {
-    class XMLProcessor
+    public class XMLProcessor
     {
+        List<RegionData> regionDataList;
         XDocument xdoc;
         public XMLProcessor(XDocument xdoc)
         {
             this.xdoc = xdoc;
+            this.regionDataList = new List<RegionData>();
         }
 
         public List<RegionData> GetRegionData()
         {
-            List<RegionData> regionDataList = new List<RegionData>();
             var q = xdoc.Element("weatherdata").Elements("datapoint").GroupBy(e => e.Element("location").Value);
             IEnumerable<RegionData> d = xdoc.Element("weatherdata").Elements("datapoint").GroupBy(e => e.Element("location").Value)
                 .Select(x => new RegionData
                 {
                     RegionName = x.Key,
-                    //AvgRainfall = x.Select(e => e.Elements("rainfall").Average(f => double.Parse(f.Value)))
+                    AvgRainfall = x.Elements("rainfall").Average(f => double.Parse(f.Value)),
+                    MinTemperature = x.Elements("temperature").Min(f => double.Parse(f.Value)),
+                    MaxTemperature = x.Elements("temperature").Max(f => double.Parse(f.Value))
+                 
                 });
 
-
-            //List<Datapoint> datapointList = new List<Datapoint>();
-            //var q = xdoc.Element("weatherdata").Elements("datapoint").GroupBy(e => e.Element("location").Value);
-            //IEnumerable<Datapoint> d = xdoc.Element("weatherdata").Elements("datapoint").GroupBy(e => e.Element("location").Value)
-            //    .Select(x => new Datapoint
-            //    {
-            //        RegionName = x.Key,
-            //        AvgRainfall = x.Select(e => e.Elements("rainfall").Average(f => double.Parse(f.Value)))
-            //    });
-
-
-            foreach (var item in d)
-            {
-                Console.WriteLine(item.RegionName);
-            }
-
-            var avgRain = q.Select(e => e.Elements("rainfall").Average(f => double.Parse(f.Value)));
-
-            var minTemp = q.Select(e => e.Elements("temperature").Min(f => double.Parse(f.Value)));
-            var maxTemp = q.Select(e => e.Elements("temperature").Max(f => double.Parse(f.Value)));
-            
-
-            foreach (var item in d)
-            {
-               
-               
-                );
-                Console.WriteLine(regionDataList.Last().RegionName + " : " + regionDataList.Last().AvgRainfall);
-            }
-            
+            regionDataList = d.ToList();
             return regionDataList;
         }
     }

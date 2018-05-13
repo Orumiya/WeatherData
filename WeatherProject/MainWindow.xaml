@@ -8,7 +8,7 @@
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
        
-        <ListBox x:Name="listbox" HorizontalAlignment="Left" Height="271" Margin="26,19,0,0" VerticalAlignment="Top" Width="225"/>
+        <ListBox x:Name="listbox" HorizontalAlignment="Left" Height="271" Margin="26,19,0,0" VerticalAlignment="Top" Width="460"/>
 
     </Grid>
 </Window>
